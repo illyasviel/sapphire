@@ -1,4 +1,4 @@
-(defproject sapphire "0.1.0-beta1-SNAPSHOT"
+(defproject sapphire "0.1.0-beta1"
   :description "A clojure declarative cache library inspired by Spring Cache and JCache."
   :url "https://github.com/illyasviel/sapphire"
   :license {:name "Apache License 2.0"
