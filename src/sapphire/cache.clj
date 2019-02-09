@@ -252,7 +252,7 @@
         native-cache-manager (if (some? config-file-path)
                                (.getCacheManager provider
                                                  (.toURI (io/resource config-file-path))
-                                                 (-> provider (.getClass) (.getClassLoader)))
+                                                 (-> empty-cache-key (.getClass) (.getClassLoader)))
                                (.getCacheManager provider))
         jcache-cache-manager (->JCacheCacheManager native-cache-manager (hash-map) (hash-set))]
     jcache-cache-manager))
