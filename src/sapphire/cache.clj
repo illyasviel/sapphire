@@ -11,7 +11,8 @@
             [clojure.java.io :as io])
   (:import (javax.cache Caching CacheManager Cache)
            (javax.cache.processor EntryProcessor)
-           (clojure.lang ILookup PersistentHashMap PersistentHashSet)))
+           (clojure.lang ILookup PersistentHashMap PersistentHashSet)
+           (java.io Closeable)))
 
 (defprotocol SapphireCache
   "This is the protocol describing the basic cache capability."
@@ -84,7 +85,7 @@
     nil
     value))
 
-(def ^SapphireCacheManager default-cache-manager)
+(def ^SapphireCacheManager default-cache-manager nil)
 (def default-key-generator simple-key-generator)
 (def default-key take-all-params)
 
@@ -200,7 +201,11 @@
   (valAt [this key not-found]
     (if-let [result (lookup this key)]
       result
-      not-found)))
+      not-found))
+
+  Closeable
+  (close [_]
+    (.close cache)))
 
 (deftype JCacheCacheManager [^CacheManager cache-manager
                              ^:volatile-mutable ^PersistentHashMap cache-map
@@ -231,7 +236,11 @@
               (set! cache-map (assoc cache-map name warped-cache))
               warped-cache))))))
   (get-cache-names [_]
-    cache-names))
+    cache-names)
+
+  Closeable
+  (close [_]
+    (.close cache-manager)))
 
 (defn jcache-cache-manager-factory
   "Return a JCacheCacheManager."
