@@ -14,9 +14,12 @@
             [lein-cloverage "1.0.13"]
             [lein-pprint "1.2.0"]]
   :profiles {:dev {:resource-paths ["resources" "test/resources"]
-                   :dependencies [[org.ehcache/ehcache "3.6.1"]
-                                  [org.apache.logging.log4j/log4j-slf4j-impl "2.11.1"]]}
-             :provided {:dependencies [[org.clojure/clojure "1.9.0"]
+                   :dependencies [[org.ehcache/ehcache "3.6.3"]
+                                  [org.apache.logging.log4j/log4j-slf4j-impl "2.11.1"]
+                                  [pjstadig/humane-test-output "0.9.0"]]
+                   :injections [(require 'pjstadig.humane-test-output)
+                                (pjstadig.humane-test-output/activate!)]}
+             :provided {:dependencies [[org.clojure/clojure "1.10.0"]
                                        [javax.xml.bind/jaxb-api "2.3.0"]
                                        [com.sun.xml.bind/jaxb-core "2.3.0"]
                                        [com.sun.xml.bind/jaxb-impl "2.3.0"]

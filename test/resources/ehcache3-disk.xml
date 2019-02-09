@@ -1,3 +1,9 @@
+<!--
+  ~ Copyright (c) 2019 the original author or authors.
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ See LICENSE file in the root directory of this source tree.
+  -->
+
 <config
   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
   xmlns='http://www.ehcache.org/v3'
@@ -9,11 +15,16 @@
     <jsr107:defaults enable-management="true" enable-statistics="true"/>
   </service>
 
+  <persistence directory="ehcache3-disk"/>
+
   <cache-template name="default-template">
     <expiry>
       <ttl unit="hours">1</ttl>
     </expiry>
-    <heap>100</heap>
+    <resources>
+      <heap>1</heap>
+      <disk unit="MB">10</disk>
+    </resources>
   </cache-template>
 
   <cache alias="default" uses-template="default-template"/>

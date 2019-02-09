@@ -6,6 +6,7 @@ logs/
 !.idea/codeStyles
 !.idea/copyright
 sapphire.iml
+ehcache3-disk/
 
 ### Clojure template
 pom.xml

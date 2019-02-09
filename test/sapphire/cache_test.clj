@@ -10,7 +10,8 @@
   (:require [clojure.test :refer :all]
             [sapphire.core :refer :all]
             [sapphire.cache :as cache]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log])
+  (:import (java.io Closeable)))
 
 (log/info "Testing with clojure" (clojure-version))
 
@@ -131,9 +132,24 @@
       (is (= "other value" (get-from-another-with-value 1 "other value"))))))
 
 (defn test-ns-hook []
-  ;; test ehcache 3
+  ;; test ehcache 3 - heap
   (cache/sapphire-init!
     :cache-manager (cache/jcache-cache-manager-factory
                      :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
                      :config-file-path "ehcache3.xml"))
-  (single-provider-test))
+  (single-provider-test)
+  (.close ^Closeable cache/default-cache-manager)
+  ;; test ehcache 3 - heap+offheap
+  (cache/sapphire-init!
+    :cache-manager (cache/jcache-cache-manager-factory
+                     :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
+                     :config-file-path "ehcache3-offheap.xml"))
+  (single-provider-test)
+  (.close ^Closeable cache/default-cache-manager)
+  ;; test ehcache 3 - heap+disk
+  (cache/sapphire-init!
+    :cache-manager (cache/jcache-cache-manager-factory
+                     :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
+                     :config-file-path "ehcache3-disk.xml"))
+  (single-provider-test)
+  (.close ^Closeable cache/default-cache-manager))
