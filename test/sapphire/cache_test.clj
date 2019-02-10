@@ -10,8 +10,7 @@
   (:require [clojure.test :refer :all]
             [sapphire.core :refer :all]
             [sapphire.cache :as cache]
-            [clojure.tools.logging :as log])
-  (:import (java.io Closeable)))
+            [clojure.tools.logging :as log]))
 
 (log/info "Testing with clojure" (clojure-version))
 
@@ -73,7 +72,7 @@
 
 ;; test-ns-hook + deftest
 
-(deftest single-provider-test
+(deftest single-provider-test*
   (testing "test :cache-result get missing"
     (is (= 1 (get-from-default 1)))
     (is (= 1 (get-from-default-with-value 1 "other value")))
@@ -131,25 +130,23 @@
       (remove-from-another 1)
       (is (= "other value" (get-from-another-with-value 1 "other value"))))))
 
+(defn single-provider-test [cache-manager]
+  (cache/sapphire-init! :cache-manager cache-manager)
+  (single-provider-test*)
+  (cache/shutdown-manager)
+  (alter-var-root #'cache/default-cache-manager (constantly nil)))
+
 (defn test-ns-hook []
-  ;; test ehcache 3 - heap
-  (cache/sapphire-init!
-    :cache-manager (cache/jcache-cache-manager-factory
-                     :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
-                     :config-file-path "ehcache3.xml"))
-  (single-provider-test)
-  (.close ^Closeable cache/default-cache-manager)
-  ;; test ehcache 3 - heap+offheap
-  (cache/sapphire-init!
-    :cache-manager (cache/jcache-cache-manager-factory
-                     :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
-                     :config-file-path "ehcache3-offheap.xml"))
-  (single-provider-test)
-  (.close ^Closeable cache/default-cache-manager)
-  ;; test ehcache 3 - heap+disk
-  (cache/sapphire-init!
-    :cache-manager (cache/jcache-cache-manager-factory
-                     :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
-                     :config-file-path "ehcache3-disk.xml"))
-  (single-provider-test)
-  (.close ^Closeable cache/default-cache-manager))
+  (doseq [config-file-path ["ehcache3.xml" "ehcache3-offheap.xml" "ehcache3-disk.xml"]]
+    (log/info "test ehcache 3 - with" config-file-path)
+    (single-provider-test
+      (cache/jcache-cache-manager-factory
+        :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
+        :config-file-path config-file-path)))
+
+  (log/info "test caffeine")
+  (single-provider-test
+    (cache/jcache-cache-manager-factory
+      :fully-qualified-class-name "com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider"
+      ;; :config-file-path "application.conf" ; see https://github.com/ben-manes/caffeine/issues/88
+      )))
