@@ -249,11 +249,9 @@
   (let [provider (if (some? fully-qualified-class-name)
                    (Caching/getCachingProvider fully-qualified-class-name)
                    (Caching/getCachingProvider))
-        native-cache-manager (if (some? config-file-path)
-                               (.getCacheManager provider
-                                                 (.toURI (io/resource config-file-path))
-                                                 (-> empty-cache-key (.getClass) (.getClassLoader)))
-                               (.getCacheManager provider))
+        native-cache-manager (.getCacheManager provider
+                                               (some-> config-file-path (io/resource) (.toURI))
+                                               (-> empty-cache-key (.getClass) (.getClassLoader)))
         jcache-cache-manager (->JCacheCacheManager native-cache-manager (hash-map) (hash-set))]
     jcache-cache-manager))
 
