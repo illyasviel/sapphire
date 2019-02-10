@@ -34,7 +34,7 @@
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit" "[lein release] prepare release %s"]
-                  ["vcs" "tag"]
+                  ["vcs" "tag" "v"]
                   ["deploy" "clojars"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit" "[lein release] prepare for next development iteration"]
