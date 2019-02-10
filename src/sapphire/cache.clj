@@ -256,3 +256,11 @@
     jcache-cache-manager))
 
 ;; ./End JCache implements
+
+(defn shutdown-manager
+  "Shut down the given/default cache manager."
+  ([]
+   (shutdown-manager default-cache-manager))
+  ([cache-manager]
+   (when (instance? Closeable cache-manager)
+     (.close ^Closeable cache-manager))))
