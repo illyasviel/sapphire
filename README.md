@@ -11,8 +11,9 @@ A clojure declarative cache library inspired by Spring Cache and JCache.
 
 ## Feature
 
-- JCache (JSR-107)
-  - EhCache 3
+- [JCache](https://jcp.org/en/jsr/detail?id=107) (JSR-107)
+  - [EhCache 3](http://www.ehcache.org/)
+  - [Caffeine](https://github.com/ben-manes/caffeine)
   - and more...
 
 ## Usage
@@ -23,6 +24,13 @@ A clojure declarative cache library inspired by Spring Cache and JCache.
 [sapphire "0.1.0-beta1"]
 ```
 
+- Currently we only support JCache, so you need to choose a provider
+and add it to your `:dependencies`
+
+```clojure
+[org.ehcache/ehcache "3.6.3"]
+```
+
 - Init cache
 
 ```clojure
@@ -30,10 +38,11 @@ A clojure declarative cache library inspired by Spring Cache and JCache.
   (:require [sapphire.core :refer :all]
             [sapphire.cache :as cache]))
 
+;; ehcache 3
 (cache/sapphire-init!
   :cache-manager (cache/jcache-cache-manager-factory
                    :fully-qualified-class-name "org.ehcache.jsr107.EhcacheCachingProvider"
-                   :config-file-path "ehcache3.xml"))
+                   :config-file-path "ehcache3.xml")) ;; <-- Provider also need a configuration file.
 ```
 
 - Cache Result (`:cache-result`)
