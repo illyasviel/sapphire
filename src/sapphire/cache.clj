@@ -245,7 +245,9 @@
 (defn jcache-cache-manager-factory
   "Return a JCacheCacheManager."
   [& {:keys [^String fully-qualified-class-name
-             ^String config-file-path]}]
+             ^String config-file-path
+             ;; beta param
+             custom-fn]}]
   (let [provider (if (some? fully-qualified-class-name)
                    (Caching/getCachingProvider fully-qualified-class-name)
                    (Caching/getCachingProvider))
@@ -253,6 +255,8 @@
                                                (some-> config-file-path (io/resource) (.toURI))
                                                (-> empty-cache-key (.getClass) (.getClassLoader)))
         jcache-cache-manager (->JCacheCacheManager native-cache-manager (hash-map) (hash-set))]
+    (when (some? custom-fn)
+      (custom-fn native-cache-manager))
     jcache-cache-manager))
 
 ;; ./End JCache implements
