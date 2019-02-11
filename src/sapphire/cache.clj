@@ -58,13 +58,13 @@
 (defn take-all-params
   "Select all params as key, this is the default key fn."
   [args]
-  args)
+  (apply list args))
 
 (defn take-n-params
   "Return a key fn take n params as key."
   [n]
   (fn [args]
-    (take n args)))
+    (apply list (take n args))))
 
 (defonce first-param (take-n-params 1))
 
