@@ -1,11 +1,18 @@
 language: clojure
-lein: 2.8.1
+lein: 2.9.0
+
+services:
+  - redis-server
+
+addons:
+  hosts:
+    - local.host
 
 jdk:
   - oraclejdk11
   - oraclejdk8
 
-script: lein with-profile +1.8:+1.9 cloverage --coveralls
+script: lein with-profile +1.8:+1.9:+1.10 cloverage --coveralls
 
 after_success:
   - curl -F json_file=@target/coverage/coveralls.json https://coveralls.io/api/v1/jobs

@@ -27,6 +27,7 @@
                                        [com.sun.xml.bind/jaxb-core "2.3.0"]
                                        [com.sun.xml.bind/jaxb-impl "2.3.0"]
                                        [javax.activation/activation "1.1.1"]]}
+             :1.10 {:dependencies [[org.clojure/clojure "1.10.0"]]}
              :1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
              :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}}
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo/"
