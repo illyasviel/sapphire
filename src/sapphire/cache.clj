@@ -85,9 +85,9 @@
     nil
     value))
 
-(def ^SapphireCacheManager default-cache-manager nil)
-(def default-key-generator simple-key-generator)
-(def default-key take-all-params)
+(def *default-cache-manager* nil)
+(def *default-key-generator* simple-key-generator)
+(def *default-key* take-all-params)
 
 (defn- generate-cache-key
   "`args`: [& args] arguments seq
@@ -96,9 +96,9 @@
   [options action args]
   (let [key-generator (or (get-in options [action :key-generator])
                           (get-in options [:cache-defaults :key-generator])
-                          default-key-generator)
+                          *default-key-generator*)
         key (or (get-in options [action :key])
-                default-key)]
+                *default-key*)]
     (log/trace (str "Generate key by selected args '" (key args) "' result '" (key-generator (key args)) "' when '" action \'))
     (key-generator (key args))))
 
@@ -110,7 +110,7 @@
     (let [cache-name (or (get-in options [action :cache-name])
                          (get-in options [:cache-defaults :cache-name])
                          (throw (IllegalStateException. (str "Cannot get cache name for " \' action \'))))
-          cache-manager default-cache-manager
+          cache-manager *default-cache-manager*
           cache (get-cache! cache-manager cache-name)]
       (when (nil? cache)
         (log/warn "\"Cannot find cache named " \' cache-name \'))
@@ -159,8 +159,8 @@
   "Init something"
   [& {:keys [cache-manager]}]
   (log/info "Init sapphire cache...")
-  (alter-var-root #'default-cache-manager (constantly cache-manager))
-  (init-caches! default-cache-manager)
+  (alter-var-root #'*default-cache-manager* (constantly cache-manager))
+  (init-caches! *default-cache-manager*)
   (log/info "Set global default cache manager success."))
 
 
@@ -264,7 +264,7 @@
 (defn shutdown-manager
   "Shut down the given/default cache manager."
   ([]
-   (shutdown-manager default-cache-manager))
+   (shutdown-manager *default-cache-manager*))
   ([cache-manager]
    (when (instance? Closeable cache-manager)
      (.close ^Closeable cache-manager))))
