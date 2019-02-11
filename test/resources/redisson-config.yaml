@@ -1,0 +1,6 @@
+---
+singleServerConfig:
+  clientName: sapphire
+  address: "redis://local.host:6379"
+  connectionMinimumIdleSize: 4
+codec: !<org.redisson.codec.FstCodec> {}

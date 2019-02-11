@@ -10,7 +10,14 @@
   (:require [clojure.test :refer :all]
             [sapphire.core :refer :all]
             [sapphire.cache :as cache]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [clojure.java.io :as io])
+  (:import (javax.cache.configuration MutableConfiguration)
+           (javax.cache.expiry AccessedExpiryPolicy Duration)
+           (javax.cache CacheManager)
+           (org.redisson.config Config)
+           (org.redisson Redisson)
+           (org.redisson.jcache.configuration RedissonConfiguration)))
 
 (log/info "Testing with clojure" (clojure-version))
 
@@ -82,8 +89,8 @@
   (testing "test params"
     (is (= "3" (get-from-default "3")))
     (is (= "3" (get-from-default-with-value "3" "other value")))
-    (is (= '(4) (get-from-default '(4))))
-    (is (= '(4) (get-from-default-with-value '(4) "other value")))
+    (is (= (list 4) (get-from-default (list 4))))
+    (is (= (list 4) (get-from-default-with-value (list 4) "other value")))
     (is (= [5] (get-from-default [5])))
     (is (= [5] (get-from-default-with-value [5] "other value")))
     (is (= #{6} (get-from-default #{6})))
@@ -91,7 +98,9 @@
     (is (= {:7 7} (get-from-default {:7 7})))
     (is (= {:7 7} (get-from-default-with-value {:7 7} "other value")))
     (is (= {:8 {:8 8}} (get-from-default {:8 {:8 8}})))
-    (is (= {:8 {:8 8}} (get-from-default-with-value {:8 {:8 8}} "other value"))))
+    (is (= {:8 {:8 8}} (get-from-default-with-value {:8 {:8 8}} "other value")))
+    (is (= {:9 [{:9 #{(list 9)}}]} (get-from-default {:9 [{:9 #{(list 9)}}]})))
+    (is (= {:9 [{:9 #{(list 9)}}]} (get-from-default-with-value {:9 [{:9 #{(list 9)}}]} "other value"))))
 
   (testing "test :cache-remove-all"
     (is (= 1 (get-from-default 1)))
@@ -128,13 +137,17 @@
       (remove-all-from-another)
       (is (= 1 (get-from-another 1 "ignore")))
       (remove-from-another 1)
-      (is (= "other value" (get-from-another-with-value 1 "other value"))))))
+      (is (= "other value" (get-from-another-with-value 1 "other value")))))
+
+  ;; clean cache
+  (remove-all-from-default)
+  (remove-all-from-another))
 
 (defn single-provider-test [cache-manager]
   (cache/sapphire-init! :cache-manager cache-manager)
   (single-provider-test*)
   (cache/shutdown-manager)
-  (alter-var-root #'cache/default-cache-manager (constantly nil)))
+  (alter-var-root #'cache/*default-cache-manager* (constantly nil)))
 
 (defn test-ns-hook []
   (doseq [config-file-path ["ehcache3.xml" "ehcache3-offheap.xml" "ehcache3-disk.xml"]]
@@ -149,4 +162,21 @@
     (cache/jcache-cache-manager-factory
       :fully-qualified-class-name "com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider"
       ;; :config-file-path "application.conf" ; see https://github.com/ben-manes/caffeine/issues/88
-      )))
+      ))
+
+  (log/info "test redisson")
+  (single-provider-test
+    (cache/jcache-cache-manager-factory
+      :fully-qualified-class-name "org.redisson.jcache.JCachingProvider"
+      :custom-fn (fn [^CacheManager cache-manager]
+                   (let [^Config redisson-config (Config/fromYAML (io/resource "redisson-config.yaml"))
+                         redisson (Redisson/create redisson-config)
+                         jcache-config (-> (MutableConfiguration.)
+                                           (.setManagementEnabled true)
+                                           (.setStatisticsEnabled true)
+                                           (.setExpiryPolicyFactory
+                                             (AccessedExpiryPolicy/factoryOf (Duration/ETERNAL))))
+                         config (RedissonConfiguration/fromInstance redisson jcache-config)]
+                     (doseq [{:keys [cache-name]} [{:cache-name "default"}
+                                                   {:cache-name "another"}]]
+                       (.createCache cache-manager cache-name config)))))))
