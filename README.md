@@ -14,6 +14,7 @@ A clojure declarative cache library inspired by Spring Cache and JCache.
 - [JCache](https://jcp.org/en/jsr/detail?id=107) (JSR-107)
   - [EhCache 3](http://www.ehcache.org/)
   - [Caffeine](https://github.com/ben-manes/caffeine)
+  - Redis [(Redisson)](https://github.com/redisson/redisson)
   - and more...
 
 ## Usage
@@ -21,7 +22,7 @@ A clojure declarative cache library inspired by Spring Cache and JCache.
 -  Adding the following to your `:dependencies`
 
 ```clojure
-[sapphire "0.1.0-beta1"]
+[sapphire "0.1.0-beta3"]
 ```
 
 - Currently we only support JCache, so you need to choose a provider
