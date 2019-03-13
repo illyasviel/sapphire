@@ -1,4 +1,13 @@
-# [0.1.0-beta3](https://github.com/illyasviel/sapphire/compare/v0.1.0-beta2...0.1.0-beta3) (2019-02-11)
+# [0.1.0-beta4](https://github.com/illyasviel/sapphire/compare/v0.1.0-beta3...v0.1.0-beta4) (2019-03-13)
+
+
+### Bug Fixes
+
+* **name:** dynamic warning ([599562e](https://github.com/illyasviel/sapphire/commit/599562e))
+
+
+
+# [0.1.0-beta3](https://github.com/illyasviel/sapphire/compare/v0.1.0-beta2...v0.1.0-beta3) (2019-02-11)
 
 
 ### Bug Fixes

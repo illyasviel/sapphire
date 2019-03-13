@@ -22,14 +22,14 @@ A clojure declarative cache library inspired by Spring Cache and JCache.
 -  Adding the following to your `:dependencies`
 
 ```clojure
-[sapphire "0.1.0-beta3"]
+[sapphire "0.1.0-beta4"]
 ```
 
 - Currently we only support JCache, so you need to choose a provider
 and add it to your `:dependencies`
 
 ```clojure
-[org.ehcache/ehcache "3.6.3"]
+[org.ehcache/ehcache "3.7.0"]
 ```
 
 - Init cache
