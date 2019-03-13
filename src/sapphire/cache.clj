@@ -85,9 +85,9 @@
     nil
     value))
 
-(def *default-cache-manager* nil)
-(def *default-key-generator* simple-key-generator)
-(def *default-key* take-all-params)
+(def ^:dynamic *default-cache-manager* nil)
+(def ^:dynamic *default-key-generator* simple-key-generator)
+(def ^:dynamic *default-key* take-all-params)
 
 (defn- generate-cache-key
   "`args`: [& args] arguments seq
