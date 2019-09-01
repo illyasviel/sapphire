@@ -7,27 +7,27 @@
   :scm {:name "git" :url "https://github.com/illyasviel/sapphire"}
   :global-vars {*warn-on-reflection* true}
   :javac-options ["-source" "8" "-target" "8" "-g"]
-  :dependencies [[org.clojure/tools.logging "0.4.1"]
-                 [javax.cache/cache-api "1.1.0"]]
+  :dependencies [[org.clojure/tools.logging "0.5.0"]
+                 [javax.cache/cache-api "1.1.1"]]
   :exclusions [org.clojure/clojure]
-  :plugins [[lein-kibit "0.1.6"]
+  :plugins [[lein-kibit "0.1.7"]
             [lein-cloverage "1.1.1"]
             [lein-pprint "1.2.0"]]
   :profiles {:dev {:resource-paths ["resources" "test/resources"]
-                   :dependencies [[org.ehcache/ehcache "3.7.0"]
-                                  [com.github.ben-manes.caffeine/caffeine "2.7.0"]
-                                  [com.github.ben-manes.caffeine/jcache "2.7.0"]
-                                  [org.redisson/redisson "3.10.4"]
-                                  [org.apache.logging.log4j/log4j-slf4j-impl "2.11.2"]
+                   :dependencies [[org.ehcache/ehcache "3.8.0"]
+                                  [com.github.ben-manes.caffeine/caffeine "2.8.0"]
+                                  [com.github.ben-manes.caffeine/jcache "2.8.0"]
+                                  [org.redisson/redisson "3.11.3"]
+                                  [org.apache.logging.log4j/log4j-slf4j-impl "2.12.1"]
                                   [pjstadig/humane-test-output "0.9.0"]]
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]}
-             :provided {:dependencies [[org.clojure/clojure "1.10.0"]
+             :provided {:dependencies [[org.clojure/clojure "1.10.1"]
                                        [javax.xml.bind/jaxb-api "2.3.0"]
                                        [com.sun.xml.bind/jaxb-core "2.3.0"]
                                        [com.sun.xml.bind/jaxb-impl "2.3.0"]
                                        [javax.activation/activation "1.1.1"]]}
-             :1.10 {:dependencies [[org.clojure/clojure "1.10.0"]]}
+             :1.10 {:dependencies [[org.clojure/clojure "1.10.1"]]}
              :1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
              :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}}
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo/"
