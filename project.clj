@@ -17,7 +17,7 @@
                    :dependencies [[org.ehcache/ehcache "3.8.0"]
                                   [com.github.ben-manes.caffeine/caffeine "2.8.0"]
                                   [com.github.ben-manes.caffeine/jcache "2.8.0"]
-                                  [org.redisson/redisson "3.11.3"]
+                                  [org.redisson/redisson "3.10.7"]
                                   [org.apache.logging.log4j/log4j-slf4j-impl "2.12.1"]
                                   [pjstadig/humane-test-output "0.9.0"]]
                    :injections [(require 'pjstadig.humane-test-output)
